@@ -1,26 +1,32 @@
 import express from 'express';
 const router = express.Router();
-import { listCamping, readCamping } from '../controllers/campingCotroller.js';
+import {
+    listCamping,
+    readCamping,
+    createCamping,
+    updateCamping,
+    deleteCamping,
+} from '../controllers/campingCotroller.js';
+
+const authCheck = (req, res, next) => {
+    try {
+        console.log('middleware active');
+        next();
+    } catch (error) {
+        console.log(error.message);
+    }
+};
 
 // READ ALL
-router.get('/camping', listCamping);
+router.get('/camping', authCheck, listCamping);
 
 //READ ONE
 router.get('/camping:id', readCamping);
 
-router.post('/camping', (req, res) => {
-    console.log(req.body);
-    res.json({ message: 'hello post camping' });
-});
+router.post('/camping', createCamping);
 
-router.put('/camping/:id', (req, res) => {
-    console.log(req.body);
-    res.json({ message: `hello put ${req.params.id}` });
-});
+router.put('/camping/:id', updateCamping);
 
-router.delete('/camping/:id', (req, res) => {
-    console.log(req.body);
-    res.json({ message: `hello delete ${req.params.id}` });
-});
+router.delete('/camping/:id', deleteCamping);
 
 export default router;
