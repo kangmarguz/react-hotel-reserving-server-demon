@@ -2,13 +2,10 @@ import renderError from '../utils/renderError.js';
 
 export const createProfile = (req, res, next) => {
     try {
-        // if (err) {
-        //     return renderError(500, ' Invalid request pokemon');
-        // }
         const { firstName, lastName, clerkID } = req.body;
-        if(true) {
-            return renderError(500, "Invalid request")
-        }
+        // if(err) {
+        //     return renderError(500, "Invalid request")
+        // }
         res.json({
             code: '200',
             message: 'create success',
