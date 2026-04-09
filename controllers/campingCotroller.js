@@ -1,61 +1,48 @@
-export const listCamping = (req, res) => {
+import renderError from '../utils/renderError.js';
+//TODO: update handle error
+export const listCamping = (req, res, next) => {
     try {
         res.json({ message: 'hello get camping from controller' });
     } catch (error) {
         console.log(error);
-        res.status(500).json({
-            code: '500',
-            message: 'Internal Server Error.',
-        });
+        next(error);
     }
 };
 
-export const readCamping = (req, res) => {
+export const readCamping = (req, res, next) => {
     try {
         res.json({ message: 'hellow from readcamping controller.' });
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({
-            code: '500',
-            message: error.message || 'Internal Server Error.',
-        });
+        next(error)
     }
 };
 
-export const createCamping = (req, res) => {
+export const createCamping = (req, res, next) => {
     try {
         console.log(req.body);
         res.json({ message: 'hello post camping' });
     } catch (error) {
-        res.status(500).json({
-            code: '500',
-            message: error.message || 'Internal Server Error.',
-        });
+        next(error);
     }
 };
 
-export const updateCamping = (req, res) => {
+export const updateCamping = (req, res, next) => {
     try {
         console.log(req.body);
         res.json({ message: `hello put ${req.params.id}` });
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({
-            code: '500',
-            message: error.message || 'Internal Server Error.',
-        });
+        next(error);
     }
 };
 
-export const deleteCamping = (req, res) => {
+export const deleteCamping = (req, res, next) => {
     try {
         console.log(req.body);
         res.json({ message: `hello delete ${req.params.id}` });
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({
-            code: '500',
-            message: error.message || 'Internal Server Error.',
-        });
+        next(error);
     }
 };

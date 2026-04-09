@@ -1,23 +1,33 @@
-export const createProfile = (req, res) => {
+import renderError from '../utils/renderError.js';
+
+export const createProfile = (req, res, next) => {
     try {
-        console.log(res.body);
+        // if (err) {
+        //     return renderError(500, ' Invalid request pokemon');
+        // }
+        const { firstName, lastName, clerkID } = req.body;
+        if(true) {
+            return renderError(500, "Invalid request")
+        }
+        res.json({
+            code: '200',
+            message: 'create success',
+        });
+
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({
-            code: '500',
-            message: 'Internal Server Error.',
-        });
+        next(error);
     }
 };
 
-export const updateProfile = (req, res) => {
+export const updateProfile = (req, res, next) => {
     try {
         console.log(res.body);
+        if (err) {
+            return renderError(500, ' Invalid request pokemon');
+        }
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({
-            code: '500',
-            message: 'Internal Server Error.',
-        });
+        next(error);
     }
 };
