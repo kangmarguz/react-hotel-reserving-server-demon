@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { readdirSync } from 'fs';
 import morgan from 'morgan';
+import handleError from './middlewares/error.js';
 const app = express();
 
 //MIDDLE WARE
@@ -13,12 +14,12 @@ const SERVER_PORT = 3333;
 
 const files = readdirSync('./routes').filter((f) => f.endsWith('.js'));
 
-await Promise.all(
-    files.map(async (file) => {
-        const route = await import(`./routes/${file}`);
-        app.use('/api', route.default);
-    }),
-);
+for (const result of files) {
+    const route = await import(`./routes/${result}`);
+    app.use('/api', route.default);
+}
+
+app.use(handleError);
 
 app.listen(3333, () => {
     console.log(`Server start with port: ${SERVER_PORT || 3003}`);
