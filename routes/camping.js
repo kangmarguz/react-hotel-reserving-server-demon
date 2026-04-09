@@ -8,14 +8,7 @@ import {
     deleteCamping,
 } from '../controllers/campingCotroller.js';
 
-const authCheck = (req, res, next) => {
-    try {
-        console.log('middleware active');
-        next();
-    } catch (error) {
-        console.log(error.message);
-    }
-};
+import { authCheck } from '../middlewares/auth.js';
 
 // READ ALL
 router.get('/camping', authCheck, listCamping);
