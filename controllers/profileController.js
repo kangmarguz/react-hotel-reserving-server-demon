@@ -7,20 +7,27 @@ export const createProfile = async (req, res, next) => {
         const { id } = req.user;
         const email = req.user.emailAddresses[0]?.emailAddress || '';
 
-        const profile = await prisma.profile.create({
-            data: {
+        const profile = await prisma.profile.upsert({
+            where: {
+                clerkId: id,
+            },
+            create: {
                 firstName,
                 lastName,
-                clerkId : id,
-                email
-            }
+                clerkId: id,
+                email,
+            },
+            update: {
+                firstName,
+                lastName,
+                email,
+            },
         });
 
         return res.json({
             result: profile,
             status: { code: '200', message: 'Create Profile Success' },
         });
-
     } catch (error) {
         console.log(error.message);
         next(error);
