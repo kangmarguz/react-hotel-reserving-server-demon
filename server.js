@@ -4,7 +4,7 @@ import { readdirSync } from 'fs';
 import { clerkMiddleware } from '@clerk/express'
 import morgan from 'morgan';
 import handleError from './middlewares/error.js';
-import 'dotenv/config.js'
+import 'dotenv/config'
 const app = express();
 
 //MIDDLE WARE

@@ -3,9 +3,9 @@ import { clerkClient, getAuth } from '@clerk/express';
 
 export const authCheck = async (req, res, next) => {
     try {
-        const { userId } = getAuth(req);
-        if (!userId) {
-            return renderError(401, 'Unauthorized');
+        const { isAuthenticated, userId } = getAuth(req);
+        if (!isAuthenticated) {
+            return renderError(401, 'User not authenticated');
         }
         const user = await clerkClient.users.getUser(userId);
         req.user = user;
