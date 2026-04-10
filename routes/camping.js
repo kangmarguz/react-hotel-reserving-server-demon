@@ -16,7 +16,7 @@ router.get('/camping', authCheck, listCamping);
 //READ ONE
 router.get('/camping:id', readCamping);
 
-router.post('/camping', createCamping);
+router.post('/camping', authCheck, createCamping);
 
 router.put('/camping/:id', updateCamping);
 

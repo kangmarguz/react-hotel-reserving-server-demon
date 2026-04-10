@@ -1,4 +1,6 @@
+import prisma from '../config/prismaClient.js';
 import renderError from '../utils/renderError.js';
+
 //TODO: update handle error
 export const listCamping = (req, res, next) => {
     try {
@@ -14,15 +16,30 @@ export const readCamping = (req, res, next) => {
         res.json({ message: 'hellow from readcamping controller.' });
     } catch (error) {
         console.log(error.message);
-        next(error)
+        next(error);
     }
 };
 
-export const createCamping = (req, res, next) => {
+export const createCamping = async (req, res, next) => {
     try {
+        const { id } = req.user;
         console.log(req.body);
-        res.json({ message: 'hello post camping' });
+        console.log(id);
+
+        const camping = await prisma.landmark.create({
+            data: {
+                ...req.body,
+                profileId: id,
+            },
+        });
+
+        return res.json({
+            result: camping,
+            status: { code: '200', message: `Create ${req.body.title || "Camping"} Success` },
+        });
     } catch (error) {
+        console.log(error.message);
+
         next(error);
     }
 };
