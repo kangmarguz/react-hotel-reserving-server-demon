@@ -2,18 +2,25 @@ import prisma from '../config/prismaClient.js';
 import renderError from '../utils/renderError.js';
 
 //TODO: update handle error
-export const listCamping = (req, res, next) => {
+export const listCamping = async (req, res, next) => {
     try {
-        res.json({ message: 'hello get camping from controller' });
+        const listCamp = await prisma.landmark.findMany();
+        res.json({ result: listCamp });
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
         next(error);
     }
 };
 
-export const readCamping = (req, res, next) => {
+export const readCamping = async (req, res, next) => {
     try {
-        res.json({ message: 'hellow from readcamping controller.' });
+        const { id } = req.params;
+        const camp = await prisma.landmark.findFirst({
+            where: {
+                id: id,
+            },
+        });
+        res.json({ result: camp });
     } catch (error) {
         console.log(error.message);
         next(error);
@@ -23,9 +30,6 @@ export const readCamping = (req, res, next) => {
 export const createCamping = async (req, res, next) => {
     try {
         const { id } = req.user;
-        console.log(req.body);
-        console.log(id);
-
         const camping = await prisma.landmark.create({
             data: {
                 ...req.body,
@@ -35,7 +39,10 @@ export const createCamping = async (req, res, next) => {
 
         return res.json({
             result: camping,
-            status: { code: '200', message: `Create ${req.body.title || "Camping"} Success` },
+            status: {
+                code: '200',
+                message: `Create ${req.body.title || 'Camping'} Success`,
+            },
         });
     } catch (error) {
         console.log(error.message);

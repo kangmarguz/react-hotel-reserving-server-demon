@@ -11,7 +11,7 @@ import {
 import { authCheck } from '../middlewares/auth.js';
 
 // READ ALL
-router.get('/camping', authCheck, listCamping);
+router.get('/camping', listCamping);
 
 //READ ONE
 router.get('/camping:id', readCamping);

@@ -1,15 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import { readdirSync } from 'fs';
-import { clerkMiddleware } from '@clerk/express'
+import { clerkMiddleware } from '@clerk/express';
 import morgan from 'morgan';
 import handleError from './middlewares/error.js';
-import 'dotenv/config'
+import 'dotenv/config';
 const app = express();
 
 //MIDDLE WARE
 app.use(cors()); //CORS
-app.use(express.json());
+app.use(express.json({ limit: '3mb' }));
 app.use(morgan('dev'));
 app.use(clerkMiddleware());
 
