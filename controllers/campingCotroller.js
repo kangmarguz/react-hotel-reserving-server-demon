@@ -30,10 +30,24 @@ export const readCamping = async (req, res, next) => {
 export const createCamping = async (req, res, next) => {
     try {
         const { id } = req.user;
+        const { title, description, lat, lng, price, category, images } =
+            req.body;
+        const { public_id, secure_url } = images;
         const camping = await prisma.landmark.create({
             data: {
-                ...req.body,
+                title: title,
+                description: description,
+                lat: lat,
+                lng: lng,
+                price: price,
+                category: category,
+                secure_url: secure_url,
+                public_id: public_id,
                 profileId: id,
+                // ...req.body,
+                // public_id: public_id,
+                // secure_url: secure_url,
+                // profileId: id,
             },
         });
 
@@ -46,7 +60,6 @@ export const createCamping = async (req, res, next) => {
         });
     } catch (error) {
         console.log(error.message);
-
         next(error);
     }
 };
