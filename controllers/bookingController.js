@@ -2,9 +2,7 @@ import prisma from '../config/prismaClient.js';
 import { calculateBookingDetails } from '../utils/booking.js';
 import renderError from '../utils/renderError.js';
 import Stripe from 'stripe';
-const stripe = new Stripe(
-    process.env.STRIPE_SECRET_KEY,
-);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createBooking = async (req, res, next) => {
     const { campingId, checkIn, checkOut } = req.body;
@@ -93,6 +91,9 @@ export const checkout = async (req, res, next) => {
         //CONNECT PAYMENT
         const session = await stripe.checkout.sessions.create({
             ui_mode: 'embedded_page',
+            metadata: {
+                bookingId: booking.id, // custom prop
+            },
             line_items: [
                 {
                     price_data: {
@@ -111,6 +112,37 @@ export const checkout = async (req, res, next) => {
             return_url: `http://localhost:5173/user/complete/{CHECKOUT_SESSION_ID}`,
         });
         res.send({ clientSecret: session.client_secret });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
+export const checkoutStatus = async (req, res, next) => {
+    try {
+        const { session_id } = req.params;
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+        const bookingId = session.metadata?.bookingId;
+        if (session.status !== 'complete' || !bookingId) {
+            return renderError(
+                400,
+                'Something Wrong pleases re-recheck to merchant.',
+            );
+        }
+        // Update booking payment status
+        const result = await prisma.booking.update({
+            where: {
+                id: bookingId,
+            },
+            data: {
+                paymentStatus: true,
+            },
+        });
+        res.json({
+            status: session.status,
+            code: '200',
+            message: 'Payment Complate',
+        });
     } catch (error) {
         console.log(error);
         next(error);
