@@ -129,6 +129,7 @@ export const actionFavorite = async (req, res, next) => {
                 message: isFavorite
                     ? 'Remove Favorite Success'
                     : 'Add Favorite Success',
+                success: true,
             },
             result,
         });
