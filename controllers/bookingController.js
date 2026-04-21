@@ -64,6 +64,38 @@ export const createBooking = async (req, res, next) => {
     }
 };
 
+export const getHistoryBooking = async (req, res, next) => {
+    try {
+        const { id } = req.user;
+        const result = await prisma.booking.findMany({
+            where: {
+                profileId: id,
+                paymentStatus: true,
+            },
+            include: {
+                landmark: {
+                    select: {
+                        title: true,
+                    },
+                },
+            },
+            orderBy: {
+                checkIn: 'asc'
+            }
+        });
+        res.json({
+            status: {
+                code: '200',
+                message: 'Booking Success',
+            },
+            result
+        });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
 export const checkout = async (req, res, next) => {
     try {
         const { id } = req.body;

@@ -6,12 +6,14 @@ import {
     createCamping,
     updateCamping,
     deleteCamping,
+    actionFavorite,
 } from '../controllers/campingCotroller.js';
 
 import { authCheck } from '../middlewares/auth.js';
 
 // READ ALL
 router.get('/camping', listCamping);
+router.get('/listcamp/:id', listCamping);
 
 //READ ONE
 router.get('/camping/:id', readCamping);
@@ -21,5 +23,7 @@ router.post('/camping', authCheck, createCamping);
 router.put('/camping/:id', updateCamping);
 
 router.delete('/camping/:id', deleteCamping);
+
+router.post('/favorite', authCheck, actionFavorite);
 
 export default router;

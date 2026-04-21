@@ -4,8 +4,24 @@ import renderError from '../utils/renderError.js';
 //TODO: update handle error
 export const listCamping = async (req, res, next) => {
     try {
-        const listCamp = await prisma.landmark.findMany();
-        res.json({ result: listCamp });
+        const { id } = req.params;
+        const listCamp = await prisma.landmark.findMany({
+            include: {
+                favorites: {
+                    where: {
+                        profileId: id,
+                    },
+                    select: {
+                        id: true,
+                    },
+                },
+            },
+        });
+
+        const campFavorte = listCamp.map((item, index) => {
+            return { ...item, isFavorite: item.favorites.length > 0 };
+        });
+        res.json({ result: campFavorte });
     } catch (error) {
         console.log(error.message);
         next(error);
@@ -80,6 +96,44 @@ export const deleteCamping = (req, res, next) => {
         res.json({ message: `hello delete ${req.params.id}` });
     } catch (error) {
         console.log(error.message);
+        next(error);
+    }
+};
+
+export const actionFavorite = async (req, res, next) => {
+    try {
+        const { campingId, isFavorite } = req.body;
+        const { id } = req.user;
+
+        let result;
+        //ADD OR REMOVE FAVORITE
+        if (isFavorite) {
+            result = await prisma.favorite.deleteMany({
+                where: {
+                    profileId: id,
+                    landmarkId: campingId,
+                },
+            });
+        } else {
+            result = await prisma.favorite.create({
+                data: {
+                    landmarkId: campingId,
+                    profileId: id,
+                },
+            });
+        }
+
+        res.json({
+            status: {
+                code: '200',
+                message: isFavorite
+                    ? 'Remove Favorite Success'
+                    : 'Add Favorite Success',
+            },
+            result,
+        });
+    } catch (error) {
+        console.log(error);
         next(error);
     }
 };
