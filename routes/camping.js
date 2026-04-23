@@ -7,6 +7,8 @@ import {
     updateCamping,
     deleteCamping,
     actionFavorite,
+    getAllFavorites,
+    searchAndFilter,
 } from '../controllers/campingCotroller.js';
 
 import { authCheck } from '../middlewares/auth.js';
@@ -25,5 +27,9 @@ router.put('/camping/:id', updateCamping);
 router.delete('/camping/:id', deleteCamping);
 
 router.post('/favorite', authCheck, actionFavorite);
+
+router.get('/favorite', authCheck, getAllFavorites);
+
+router.get('/filter-camp', searchAndFilter);
 
 export default router;

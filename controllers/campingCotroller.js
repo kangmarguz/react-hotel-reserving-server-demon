@@ -138,3 +138,66 @@ export const actionFavorite = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getAllFavorites = async (req, res, next) => {
+    try {
+        const { id } = req.user;
+        const favorites = await prisma.favorite.findMany({
+            where: {
+                profileId: id,
+            },
+            include: {
+                landmark: true,
+            },
+        });
+
+        const favoritSelected = favorites?.map((item) => {
+            return {
+                ...item,
+                landmark: { ...item.landmark, isFavorite: true },
+            };
+        });
+
+        res.json({
+            status: {
+                code: '200',
+                success: true,
+            },
+            result: favoritSelected,
+        });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
+export const searchAndFilter = async (req, res, next) => {
+    try {
+        const { category, search } = req.query;
+        const filter = [];
+        if (category) filter.push({ category: category });
+        if (search) filter.push({ title: { contains: search } });
+
+        const result = await prisma.landmark.findMany({
+            where: {
+                OR: filter,
+            },
+            include: {
+                favorites: {
+                    select: {
+                        id: true,
+                    },
+                },
+            },
+        });
+
+        const campFavorte = result.map((item) => {
+            return { ...item, isFavorite: item.favorites.length > 0 };
+        });
+
+        res.json({ result: campFavorte });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
